@@ -21,3 +21,5 @@ models/*
 # 운영체제가 자동 생성하는 파일을 제외합니다.
 .DS_Store
 Thumbs.db
+
+mintty.exe.stackdump
