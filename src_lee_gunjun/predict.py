@@ -9,7 +9,7 @@ from src.config import DEFAULT_MODEL_NAME, ID_TO_LABEL, MAX_LEN, MODEL_DIR
 from src.utils import get_device
 
 
-class SentimentPredictor:
+class KorSentimentPredictor:
     """Streamlit과 다른 Python 코드에서 재사용할 수 있는 감성분석 예측 클래스입니다."""
 
     def __init__(self, model_dir: str | Path = MODEL_DIR, fallback_model_name: str = DEFAULT_MODEL_NAME, max_len: int = MAX_LEN):

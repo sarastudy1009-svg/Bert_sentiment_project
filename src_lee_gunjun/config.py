@@ -9,14 +9,16 @@ BASE_DIR = Path(__file__).resolve().parents[1]
 DATA_DIR = BASE_DIR / "data"
 
 # 학습된 모델과 토크나이저가 저장되는 기본 폴더 경로입니다.
-MODEL_DIR = BASE_DIR / "models" / "bert_sentiment"
+KOR_MODEL_DIR = BASE_DIR / "models" / "kor_bert_sentiment"
 
 # 예제 데이터 경로입니다. 사용자가 별도 데이터를 준비하지 않아도 학습 테스트가 가능합니다.
-DEFAULT_DATA_PATH = DATA_DIR / "sample_sentiment.csv"
+DEFAULT_DATA_PATH = DATA_DIR / "ratings_train.txt"
 
 # Hugging Face에서 내려받을 기본 BERT 모델명입니다.
 # 제공된 노트북의 기본값인 bert-base-uncased를 사용합니다.
-DEFAULT_MODEL_NAME = "bert-base-uncased"
+# DEFAULT_MODEL_NAME = "bert-base-uncased"
+
+DEFAULT_MODEL_NAME = "klue/bert-base"
 
 # BERT 입력에 사용할 최대 토큰 길이입니다.
 # 긴 문장은 잘리고 짧은 문장은 padding으로 채워집니다.

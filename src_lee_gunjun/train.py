@@ -6,11 +6,11 @@ import numpy as np
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from transformers import BertTokenizerFast, Trainer, TrainingArguments
 
-from src.config import DEFAULT_DATA_PATH, DEFAULT_MODEL_NAME, MAX_LEN, MODEL_DIR, SEED
-from src.data_loader import load_sentiment_csv, split_dataset
-from src.dataset import BertSentimentDataset
-from src.modeling import apply_fine_tuning_strategy, count_trainable_parameters, create_model
-from src.utils import get_device, set_seed
+from src_lee_gunjun.config import DEFAULT_DATA_PATH, DEFAULT_MODEL_NAME, MAX_LEN, KOR_MODEL_DIR, SEED
+from src_lee_gunjun.data_loader import load_sentiment_csv, split_dataset
+from src_lee_gunjun.dataset import BertSentimentDataset
+from src_lee_gunjun.modeling import apply_fine_tuning_strategy, count_trainable_parameters, create_model
+from src_lee_gunjun.utils import get_device, set_seed
 
 
 def compute_metrics(pred) -> dict[str, float]:
@@ -41,6 +41,10 @@ def train(args: argparse.Namespace) -> None:
 
     # CSV 파일을 읽고 라벨을 숫자로 변환합니다.
     dataset = load_sentiment_csv(args.data_path)
+
+    # max_samples가 지정된 경우 해당 수만큼만 샘플링합니다.
+    if args.max_samples:
+        dataset = dataset.sample(n=args.max_samples, random_state=SEED).reset_index(drop=True)
 
     # 데이터를 학습, 검증, 테스트 세트로 나눕니다.
     train_df, valid_df, test_df = split_dataset(dataset)
@@ -127,7 +131,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--model_name", type=str, default=DEFAULT_MODEL_NAME, help="Hugging Face BERT 모델명")
 
     # 학습된 모델 저장 경로를 입력받습니다.
-    parser.add_argument("--output_dir", type=str, default=str(MODEL_DIR), help="학습 모델 저장 폴더")
+    parser.add_argument("--output_dir", type=str, default=str(KOR_MODEL_DIR), help="학습 모델 저장 폴더")
 
     # 입력 문장의 최대 토큰 길이를 입력받습니다.
     parser.add_argument("--max_len", type=int, default=MAX_LEN, help="BERT 최대 입력 토큰 길이")
@@ -149,6 +153,8 @@ def parse_args() -> argparse.Namespace:
 
     # weight decay 값을 입력받습니다.
     parser.add_argument("--weight_decay", type=float, default=0.01, help="가중치 감쇠 정규화 강도")
+
+    parser.add_argument("--max_samples", type=int, default=None, help="학습에 사용할 최대 샘플 수")
 
     # 파싱한 인자 객체를 반환합니다.
     return parser.parse_args()

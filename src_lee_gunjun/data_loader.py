@@ -19,10 +19,10 @@ def load_sentiment_csv(data_path: str | Path) -> pd.DataFrame:
 
     # UTF-8 CSV를 우선 읽습니다. 대부분의 공개 데이터셋은 UTF-8 형식을 사용합니다.
     try:
-        dataset = pd.read_csv(data_path)
+        dataset = pd.read_csv(data_path, sep="\t")
     except UnicodeDecodeError:
         # Windows에서 저장한 한글 CSV는 cp949 인코딩일 수 있으므로 실패 시 cp949로 다시 읽습니다.
-        dataset = pd.read_csv(data_path, encoding="cp949")
+        dataset = pd.read_csv(data_path, encoding="cp949", sep="\t")
 
     # 컬럼명 앞뒤 공백을 제거하여 " review " 같은 문제를 예방합니다.
     dataset.columns = dataset.columns.str.strip()
