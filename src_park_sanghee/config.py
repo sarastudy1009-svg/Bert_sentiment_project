@@ -16,7 +16,9 @@ DEFAULT_DATA_PATH = DATA_DIR / "sample_sentiment.csv"
 
 # Hugging Face에서 내려받을 기본 BERT 모델명입니다.
 # 제공된 노트북의 기본값인 bert-base-uncased를 사용합니다.
-DEFAULT_MODEL_NAME = "bert-base-uncased"
+# DEFAULT_MODEL_NAME = "bert-base-uncased"
+# DEFAULT_MODEL_NAME = "klue/bert-base"
+DEFAULT_MODEL_NAME = "beomi/kcbert-base"
 
 # BERT 입력에 사용할 최대 토큰 길이입니다.
 # 긴 문장은 잘리고 짧은 문장은 padding으로 채워집니다.
