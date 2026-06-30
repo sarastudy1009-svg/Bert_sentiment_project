@@ -14,6 +14,8 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from src.config import MODEL_DIR  # noqa: E402
 from src.predict import SentimentPredictor  # noqa: E402
+from src_lee_sueun.config import MODEL_DIR as KOREAN_MODEL_DIR  # noqa: E402
+from src_lee_sueun.predict import KoreanSentimentPredictor  # noqa: E402
 
 
 @st.cache_resource
@@ -21,6 +23,12 @@ def load_predictor() -> SentimentPredictor:
     """Streamlit이 화면을 다시 그릴 때마다 모델을 다시 로드하지 않도록 캐싱합니다."""
     # 저장된 모델 폴더가 있으면 해당 모델을 사용하고, 없으면 기본 BERT 분류 모델을 사용합니다.
     return SentimentPredictor(model_dir=MODEL_DIR)
+
+
+@st.cache_resource
+def load_korean_predictor() -> KoreanSentimentPredictor:
+    """한국어 감성분석 모델도 Streamlit 재실행마다 다시 로드하지 않도록 캐싱합니다."""
+    return KoreanSentimentPredictor(model_dir=KOREAN_MODEL_DIR)
 
 
 def main() -> None:
@@ -38,7 +46,7 @@ def main() -> None:
     if not MODEL_DIR.exists():
         st.warning("학습된 모델 폴더가 없습니다. 먼저 `python -m src.train` 명령으로 모델을 학습하면 더 정확한 결과를 볼 수 있습니다.")
 
-    # 예측할 문장을 입력받는 텍스트 영역을 만듭니다.
+    # 예측할 영어 문장을 입력받는 텍스트 영역을 만듭니다.
     text = st.text_area("분석할 문장 입력", value="This movie was wonderful and I loved it.", height=120)
 
     # 사용자가 버튼을 누르면 예측을 실행합니다.
@@ -67,6 +75,27 @@ def main() -> None:
         except Exception as error:
             # 예측 중 발생한 오류를 화면에 표시하여 원인을 빠르게 확인할 수 있게 합니다.
             st.error(f"예측 중 오류가 발생했습니다: {error}")
+
+    st.divider()
+    st.subheader("한국어 리뷰 감성분석")
+
+    # 과제 요구사항에 맞춰 input_text 변수로 한국어 리뷰 문장을 입력받습니다.
+    input_text = st.text_area("한국어 리뷰 문장:", value="이 영화는 정말 재미있고 감동적이었어요.", height=120)
+
+    if st.button("감성분석"):
+        try:
+            korean_predictor = load_korean_predictor()
+            korean_result = korean_predictor.predict(input_text)
+
+            st.subheader(f"감성분석 결과: {korean_result['label']}")
+            st.write(f"긍정 확률: {korean_result['positive_probability']:.4f}")
+            st.progress(korean_result["positive_probability"])
+            st.write(f"부정 확률: {korean_result['negative_probability']:.4f}")
+            st.progress(korean_result["negative_probability"])
+            st.caption(f"사용 모델: {korean_result['model_path']}")
+
+        except Exception as error:
+            st.error(f"한국어 감성분석 중 오류가 발생했습니다: {error}")
 
 
 if __name__ == "__main__":
