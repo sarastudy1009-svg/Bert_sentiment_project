@@ -1,4 +1,4 @@
-"""Streamlit으로 문장을 입력받고 BERT 감성분석 결과를 출력하는 앱입니다."""
+﻿"""Streamlit으로 문장을 입력받고 BERT 감성분석 결과를 출력하는 앱입니다."""
 
 import sys
 from pathlib import Path
@@ -14,6 +14,8 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from src.config import MODEL_DIR  # noqa: E402
 from src.predict import SentimentPredictor  # noqa: E402
+from src_choi_sangwook.config import MODEL_DIR as KO_MODEL_DIR  # noqa: E402
+from src_choi_sangwook.predict import SentimentPredictor as KoreanSentimentPredictor  # noqa: E402
 
 
 @st.cache_resource
@@ -21,6 +23,13 @@ def load_predictor() -> SentimentPredictor:
     """Streamlit이 화면을 다시 그릴 때마다 모델을 다시 로드하지 않도록 캐싱합니다."""
     # 저장된 모델 폴더가 있으면 해당 모델을 사용하고, 없으면 기본 BERT 분류 모델을 사용합니다.
     return SentimentPredictor(model_dir=MODEL_DIR)
+
+
+@st.cache_resource
+def load_korean_predictor() -> KoreanSentimentPredictor:
+    """Streamlit이 화면을 다시 그릴 때마다 한국어 모델을 다시 로드하지 않도록 캐싱합니다."""
+    # 저장된 한국어 모델 폴더가 있으면 해당 모델을 사용하고, 없으면 기본 한국어 BERT 분류 모델을 사용합니다.
+    return KoreanSentimentPredictor(model_dir=KO_MODEL_DIR)
 
 
 def main() -> None:
@@ -67,6 +76,47 @@ def main() -> None:
         except Exception as error:
             # 예측 중 발생한 오류를 화면에 표시하여 원인을 빠르게 확인할 수 있게 합니다.
             st.error(f"예측 중 오류가 발생했습니다: {error}")
+
+    # 영어 입력 영역과 한국어 입력 영역을 구분합니다.
+    st.divider()
+
+    # 학습된 한국어 모델 파일이 없는 경우 기본 사전 학습 모델이 사용될 수 있음을 안내합니다.
+    if not (KO_MODEL_DIR / "config.json").exists():
+        st.warning("학습된 한국어 모델 파일이 없습니다. 먼저 `python -m src_choi_sangwook.train` 명령으로 모델을 학습하면 더 정확한 결과를 볼 수 있습니다.")
+
+    # 예측할 한국어 문장을 입력받는 텍스트 영역을 만듭니다.
+    kor_text = st.text_area(
+        "분석할 한국어 문장 입력",
+        value="영화가 기대했던 것만큼 재미있고 배우들의 연기도 좋았습니다.",
+        height=120,
+    )
+
+    # 사용자가 한국어 감성분석 버튼을 누르면 예측을 실행합니다.
+    if st.button("한국어 감성분석 실행", type="primary"):
+        try:
+            # 캐시된 한국어 예측 객체를 불러옵니다.
+            kor_predictor = load_korean_predictor()
+
+            # 입력 문장에 대한 한국어 예측 결과를 계산합니다.
+            kor_result = kor_predictor.predict(kor_text)
+
+            # 최종 분류 결과를 크게 출력합니다.
+            st.subheader(f"분류 결과: {kor_result['label']}")
+
+            # 긍정 확률을 progress bar로 출력합니다.
+            st.write(f"긍정 확률: {kor_result['positive_probability']:.4f}")
+            st.progress(kor_result["positive_probability"])
+
+            # 부정 확률을 progress bar로 출력합니다.
+            st.write(f"부정 확률: {kor_result['negative_probability']:.4f}")
+            st.progress(kor_result["negative_probability"])
+
+            # 현재 어떤 한국어 모델 경로를 사용했는지 출력합니다.
+            st.caption(f"사용 모델: {kor_result['model_path']}")
+
+        except Exception as error:
+            # 한국어 예측 중 발생한 오류를 화면에 표시하여 원인을 빠르게 확인할 수 있게 합니다.
+            st.error(f"한국어 예측 중 오류가 발생했습니다: {error}")
 
 
 if __name__ == "__main__":
