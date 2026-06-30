@@ -6,11 +6,12 @@ import numpy as np
 from sklearn.metrics import accuracy_score, precision_recall_fscore_support
 from transformers import BertTokenizerFast, Trainer, TrainingArguments
 
-from src.config import DEFAULT_DATA_PATH, DEFAULT_MODEL_NAME, MAX_LEN, MODEL_DIR, SEED
-from src.data_loader import load_sentiment_csv, split_dataset
-from src.dataset import BertSentimentDataset
-from src.modeling import apply_fine_tuning_strategy, count_trainable_parameters, create_model
-from src.utils import get_device, set_seed
+# 패키지 경로를 src에서 src_moon_dongwon으로 변경합니다.
+from src_moon_dongwon.config import DEFAULT_DATA_PATH, DEFAULT_MODEL_NAME, MAX_LEN, MODEL_DIR, SEED
+from src_moon_dongwon.data_loader import load_sentiment_csv, split_dataset
+from src_moon_dongwon.dataset import BertSentimentDataset
+from src_moon_dongwon.model import apply_fine_tuning_strategy, count_trainable_parameters, create_model
+from src_moon_dongwon.utils import get_device, set_seed
 
 
 def compute_metrics(pred) -> dict[str, float]:
@@ -39,7 +40,7 @@ def train(args: argparse.Namespace) -> None:
     # GPU가 있으면 GPU를 사용하고, 없으면 CPU를 사용합니다.
     device = get_device()
 
-    # CSV 파일을 읽고 라벨을 숫자로 변환합니다.
+    # 데이터를 읽고 라벨을 숫자로 변환합니다. (src_moon_dongwon의 전처리 로직 반영)
     dataset = load_sentiment_csv(args.data_path)
 
     # 데이터를 학습, 검증, 테스트 세트로 나눕니다.
@@ -120,8 +121,8 @@ def parse_args() -> argparse.Namespace:
     # argparse는 터미널 실행 옵션을 처리하기 위한 표준 라이브러리입니다.
     parser = argparse.ArgumentParser(description="BERT 감성분석 모델 학습 스크립트")
 
-    # 학습 CSV 파일 경로를 입력받습니다.
-    parser.add_argument("--data_path", type=str, default=str(DEFAULT_DATA_PATH), help="review,sentiment 컬럼을 가진 CSV 파일 경로")
+    # 학습 데이터 파일 경로를 입력받습니다. (네이버 영화 리뷰 등의 텍스트/CSV 포맷)
+    parser.add_argument("--data_path", type=str, default=str(DEFAULT_DATA_PATH), help="학습에 사용할 데이터셋 파일 경로")
 
     # 사용할 사전 학습 BERT 모델명을 입력받습니다.
     parser.add_argument("--model_name", type=str, default=DEFAULT_MODEL_NAME, help="Hugging Face BERT 모델명")

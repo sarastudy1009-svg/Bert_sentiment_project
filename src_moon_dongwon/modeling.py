@@ -18,11 +18,8 @@ def apply_fine_tuning_strategy(model: BertForSequenceClassification, strategy: i
     for param in model.parameters():
         param.requires_grad = True
 
-    # BERT Base 모델의 마지막 Encoder Layer 이름입니다.
-    last_encoder_layer_name = "encoder.layer.11"
-
     if strategy == 1:
-        # 전략 1은 BERT 본체 전체를 동결하고 classifier만 학습합니다.
+        # 전략 1은 BERT 본체 전체를 동결하고 classifier(분류 레이어)만 학습합니다.
         for name, param in model.bert.named_parameters():
             param.requires_grad = False
 
@@ -33,10 +30,16 @@ def apply_fine_tuning_strategy(model: BertForSequenceClassification, strategy: i
                 param.requires_grad = False
 
     elif strategy == 3:
-        # 전략 3은 마지막 Encoder Layer와 pooler만 학습하고 나머지 BERT 본체를 동결합니다.
+        # 전략 3은 마지막 Encoder Layer(11번)와 pooler만 학습하고 나머지 BERT 본체를 동결합니다.
+        # 한국어 BERT Base 모델들의 표준 레이어 명명 규칙(encoder.layer.11.)을 안전하게 매칭합니다.
+        target_layer_keyword = "encoder.layer.11."
+
         for name, param in model.bert.named_parameters():
-            if (not name.startswith("pooler")) and (last_encoder_layer_name not in name):
-                param.requires_grad = False
+            # pooler 레이어이거나 11번 레이어라면 학습 가능(동결 제외) 상태로 둡니다.
+            if name.startswith("pooler") or target_layer_keyword in name:
+                continue
+            # 그 외의 모든 BERT 내부 본체 파라미터는 동결합니다.
+            param.requires_grad = False
 
     else:
         # 허용되지 않는 전략 값이면 즉시 오류를 발생시켜 잘못된 학습 설정을 막습니다.

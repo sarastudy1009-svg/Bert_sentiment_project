@@ -1,11 +1,17 @@
 """CSV 감성분석 데이터를 읽고 BERT 학습에 맞는 형태로 정리하는 파일입니다."""
 
-from pathlib import Path
 
+import pickle
 import pandas as pd
+import numpy as np
+import matplotlib.pyplot as plt
+import re
+import urllib.request
+# from konlpy.tag import Okt #Mecab
+from tqdm import tqdm
 from sklearn.model_selection import train_test_split
+from collections import Counter
 
-from src.config import LABEL_TO_ID, SEED
 
 # 프로젝트 루트 기준의 data/review_statement_enhanced.csv 경로를 정의합니다.
 # 이 파일은 src/ 폴더 내에 있으므로 parent.parent를 통해 프로젝트 루트로 이동합니다.
