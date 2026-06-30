@@ -26,18 +26,20 @@
   - [x] `predict.py`
   - [x] `train.py`
   - [x] `utils.py`
-- [~] **3. 한국어 감성분석 모델 적용**
+- [x] **3. 한국어 감성분석 모델 적용**
   - [x] (빠른 경로) 사전학습 NSMC 모델(`monologg/koelectra-base-finetuned-nsmc`) 추론 검증 → 샘플 6/6 정확
-  - [ ] (느린 경로) NSMC 데이터로 직접 파인튜닝 + 평가 → **학습 진행 중(백그라운드)**
+  - [x] (느린 경로) NSMC 데이터로 직접 파인튜닝 + 평가 → 전체 파인튜닝 테스트 정확도 **87.1%**, 샘플 6/6 정확
 - [x] **4. Streamlit 앱 연결**
   - [x] 영어 리뷰 입력 필드 유지
   - [x] 한국어 리뷰 입력 필드 추가 (`input_text` + '감성분석' 버튼)
   - [x] 버튼 클릭 시 한국어 감성분석 결과 출력
-- [~] **5. 결과 리포트**
-  - [x] 사전학습 모델 리포트 (`reports/report_pretrained_nsmc.md`)
-  - [ ] 파인튜닝 모델 리포트 (`reports/report_finetuned_nsmc.md`) → 학습 완료 후 작성
+- [x] **5. 결과 리포트**
+  - [x] 구현 보고서 (`구현_보고서.md`)
+  - [x] 사전학습 모델 리포트 (`report_pretrained_nsmc.md`)
+  - [x] 파인튜닝 모델 리포트 (`report_finetuned_nsmc.md`)
 - [ ] **6. 본인 레포로 커밋/푸시** (`origin/choi_yeonwoo`)
 
 ## 환경 메모
 - 프로젝트 전용 `.venv` 생성 + `requirements.txt` 설치 (transformers 4.48.3 / torch 2.5.1 CPU)
-- CUDA 미사용(CPU). 파인튜닝은 CPU 시간 제약으로 NSMC 일부 표본 사용 예정.
+- CUDA 미사용(CPU). 파인튜닝은 CPU 시간 제약으로 NSMC 표본(6,000~8,000)을 사용함.
+- 리포트는 모두 `src_choi_yeonwoo/reports/` 에 위치.
