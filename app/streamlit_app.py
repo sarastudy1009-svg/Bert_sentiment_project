@@ -5,6 +5,17 @@ from pathlib import Path
 
 import streamlit as st
 
+# 실습 추가된 부분 --------------
+# 프로젝트 루트(app의 부모 폴더)를 sys.path에 추가
+ROOT_DIR = Path(__file__).resolve().parent.parent
+if str(ROOT_DIR) not in sys.path:
+    sys.path.append(str(ROOT_DIR))
+from src_im_jungtak.predict import SentimentPredictor as KoreanSentimentPredictor
+@st.cache_resource
+def load_korean_predictor():
+    return KoreanSentimentPredictor()
+# ---------------------------------
+
 # Streamlit을 프로젝트 루트 밖에서 실행해도 src 패키지를 찾을 수 있도록 프로젝트 루트를 Python 경로에 추가합니다.
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
@@ -68,6 +79,24 @@ def main() -> None:
             # 예측 중 발생한 오류를 화면에 표시하여 원인을 빠르게 확인할 수 있게 합니다.
             st.error(f"예측 중 오류가 발생했습니다: {error}")
 
+    # 추가된 부분 -------------------
+    st.markdown("---")
+    st.subheader("한국어 리뷰 감성분석")
+
+    input_text = st.text_input("한국어 리뷰 문장을 입력하세요")
+
+    if st.button("감성분석"):
+        if input_text.strip():
+            ko_predictor = load_korean_predictor()
+            result = ko_predictor.predict(input_text)
+
+            st.write(f"**분류 결과:** {result['label']}")
+            st.write(f"긍정 확률: {result['positive_prob']:.4f}")
+            st.write(f"부정 확률: {result['negative_prob']:.4f}")
+            st.write(f"사용 모델 경로: {result['model_path']}")
+        else:
+            st.warning("문장을 입력해주세요.")
+    # ---------------------------------------------
 
 if __name__ == "__main__":
     # streamlit run app/streamlit_app.py로 실행할 때 main 함수를 호출합니다.
