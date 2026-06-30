@@ -12,6 +12,10 @@ env/
 models/*
 !models/.gitkeep
 
+# 자동으로 내려받는 NSMC 원본 데이터(용량이 커서 제외, train.py 실행 시 자동 다운로드).
+data/nsmc_ratings_train.txt
+data/nsmc_ratings_test.txt
+
 # Hugging Face / Streamlit / IDE 임시 파일을 제외합니다.
 .cache/
 .streamlit/secrets.toml

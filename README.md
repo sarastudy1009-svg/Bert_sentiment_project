@@ -81,3 +81,44 @@ streamlit run app/streamlit_app.py
 이 모델은 영어 데이터에 적합합니다. 
 한국어 문장 감성분석을 하려면 한국어 데이터셋으로 학습하고, 
 `src/config.py`의 `DEFAULT_MODEL_NAME`을 한국어 BERT 모델명으로 바꾸어 사용하는 것이 좋습니다.
+
+## 7. 한국어 감성분석 (`src_choi_yeonwoo/` 패키지)
+
+영어용 `src/` 와 동일한 파일 구조로 한국어 감성분석 패키지 `src_choi_yeonwoo/` 를 추가했습니다.
+Streamlit 앱(`app/streamlit_app.py`)에서 영어 입력 필드는 그대로 두고, 한국어 리뷰 입력 필드와
+`감성분석` 버튼을 추가로 제공합니다.
+
+```
+src_choi_yeonwoo/
+├─ config.py        # 한국어 모델명, NSMC 경로, 라벨 설정
+├─ data_loader.py   # NSMC 자동 다운로드 + CSV 로드, train/valid/test 분리
+├─ dataset.py       # 토크나이저 입력용 PyTorch Dataset
+├─ modeling.py      # AutoModelForSequenceClassification 생성 + Fine-tuning 전략
+├─ predict.py       # KoreanSentimentPredictor (문장 예측 클래스)
+├─ train.py         # NSMC 파인튜닝 실행 스크립트
+└─ utils.py         # 시드 고정, 장치 선택 함수
+```
+
+### 7-1. 사전학습 모델(빠른 경로)
+학습 없이 바로 사용합니다. 최초 1회 모델을 자동으로 내려받습니다.
+기본 모델: `monologg/koelectra-base-finetuned-nsmc` (KoELECTRA 를 NSMC 로 미세조정한 공개 모델).
+
+```bash
+python -m src_choi_yeonwoo.predict
+```
+
+### 7-2. 직접 파인튜닝(느린 경로)
+NSMC(Naver sentiment movie corpus)를 자동으로 내려받아 KoELECTRA 백본을 직접 파인튜닝합니다.
+학습이 끝나면 `models/korean_sentiment/` 에 저장되고, 앱은 이 모델을 우선 사용합니다.
+
+```bash
+python -m src_choi_yeonwoo.train --epochs 1 --max_samples 6000
+```
+
+### 7-3. 앱 실행
+```bash
+streamlit run app/streamlit_app.py
+```
+한국어 영역에 리뷰 문장을 입력하고 `감성분석` 버튼을 누르면 긍정/부정 결과와 확률이 출력됩니다.
+
+> 결과 리포트는 `reports/` 폴더를 참고하세요. (`checklist.md`, `report_pretrained_nsmc.md`, `report_finetuned_nsmc.md`)
