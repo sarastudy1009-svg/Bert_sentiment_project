@@ -2,8 +2,9 @@
 
 import sys
 from pathlib import Path
-
 import streamlit as st
+
+
 
 # Streamlit을 프로젝트 루트 밖에서 실행해도 src 패키지를 찾을 수 있도록 프로젝트 루트를 Python 경로에 추가합니다.
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
@@ -12,8 +13,13 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.append(str(PROJECT_ROOT))
 
+# 영어 감성분석용
 from src.config import MODEL_DIR  # noqa: E402
 from src.predict import SentimentPredictor  # noqa: E402
+
+# 한국어 감성분석용
+from src_kweon_sora.config import MODEL_DIR as KO_MODEL_DIR
+from src_kweon_sora.predict import SentimentPredictor as KoSentimentPredictor
 
 
 @st.cache_resource
@@ -22,6 +28,9 @@ def load_predictor() -> SentimentPredictor:
     # 저장된 모델 폴더가 있으면 해당 모델을 사용하고, 없으면 기본 BERT 분류 모델을 사용합니다.
     return SentimentPredictor(model_dir=MODEL_DIR)
 
+@st.cache_resource
+def load_ko_predictor() -> KoSentimentPredictor:
+    return KoSentimentPredictor(model_dir=KO_MODEL_DIR)
 
 def main() -> None:
     """Streamlit 화면을 구성하고 사용자 입력에 대한 예측 결과를 출력합니다."""
@@ -42,7 +51,7 @@ def main() -> None:
     text = st.text_area("분석할 문장 입력", value="This movie was wonderful and I loved it.", height=120)
 
     # 사용자가 버튼을 누르면 예측을 실행합니다.
-    if st.button("감성분석 실행", type="primary"):
+    if st.button("영어 감성분석 실행", type="primary"):
         try:
             # 캐시된 예측 객체를 불러옵니다.
             predictor = load_predictor()
@@ -68,6 +77,28 @@ def main() -> None:
             # 예측 중 발생한 오류를 화면에 표시하여 원인을 빠르게 확인할 수 있게 합니다.
             st.error(f"예측 중 오류가 발생했습니다: {error}")
 
+    st.divider()
+    st.subheader("한국어 리뷰 감정분석")
+
+    input_text = st.text_area(
+        "한국어 리뷰 문장",
+        value="이 영화 정말 재미있어요~",
+        height=120,
+    )
+
+    if st.button("한국어 감성분석 실행", type="secondary"):
+        try:
+            ko_predictor = load_ko_predictor()
+            ko_result = ko_predictor.predict(input_text)
+            st.subheader(f"분류 결과 : {ko_result['label']}")
+            st.write(f"긍정 확률 : {ko_result['positive_probability']:.4f}")
+            st.progress(ko_result["positive_probability"])
+            st.write(f"부정 확률 : {ko_result['negative_probability']:.4f}")
+            st.progress(ko_result["negative_probability"])
+            st.caption(f"사용 모델 : {ko_result['model_path']}")
+
+        except Exception as error:
+            st.error(f"한국어 예측 중 오류가 발생했습니다. : {error}")
 
 if __name__ == "__main__":
     # streamlit run app/streamlit_app.py로 실행할 때 main 함수를 호출합니다.
