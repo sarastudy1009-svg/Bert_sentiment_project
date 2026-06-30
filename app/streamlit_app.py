@@ -12,8 +12,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.append(str(PROJECT_ROOT))
 
-from src.config import MODEL_DIR  # noqa: E402
-from src.predict import SentimentPredictor  # noqa: E402
+from src_park_hyoejong.config import MODEL_DIR  # noqa: E402
+from src_park_hyoejong.predict import SentimentPredictor  # noqa: E402
 
 
 @st.cache_resource
@@ -36,7 +36,7 @@ def main() -> None:
 
     # 학습된 모델이 없는 경우 기본 사전 학습 모델이 사용될 수 있음을 안내합니다.
     if not MODEL_DIR.exists():
-        st.warning("학습된 모델 폴더가 없습니다. 먼저 `python -m src.train` 명령으로 모델을 학습하면 더 정확한 결과를 볼 수 있습니다.")
+        st.warning("학습된 모델 폴더가 없습니다. 먼저 `python -m src_park_hyoejong.train` 명령으로 모델을 학습하면 더 정확한 결과를 볼 수 있습니다.")
 
     # 예측할 문장을 입력받는 텍스트 영역을 만듭니다.
     text = st.text_area("분석할 문장 입력", value="This movie was wonderful and I loved it.", height=120)

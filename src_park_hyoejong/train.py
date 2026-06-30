@@ -160,7 +160,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--strategy", type=int, default=3, choices=[1, 2, 3], help="Fine-tuning 전략 번호")
 
     # 학습 epoch 수를 입력받습니다.
-    parser.add_argument("--epochs", type=int, default=3, help="학습 반복 횟수")
+    parser.add_argument("--epochs", type=int, default=1, help="학습 반복 횟수")
 
     # 학습 배치 크기를 입력받습니다.
     parser.add_argument("--train_batch_size", type=int, default=32, help="학습 배치 크기")

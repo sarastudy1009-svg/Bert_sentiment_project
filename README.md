@@ -13,7 +13,7 @@ Bert_sentiment_project/
 │  └─ .gitkeep                  # 학습 모델 저장 폴더
 ├─ src/
 │  ├─ config.py                 # 경로, 모델명, 라벨 설정
-│  ├─ data_loader.py            # CSV 로드와 train/valid/test 분리
+│  ├─ data_loader.py            # NSMC 데이터셋 다운로드, CSV 로드와 train/valid/test 분리
 │  ├─ dataset.py                # BERT 입력용 PyTorch Dataset
 │  ├─ modeling.py               # BERT 모델 생성과 Fine-tuning 전략
 │  ├─ predict.py                # 문장 예측 클래스
@@ -48,7 +48,7 @@ review,sentiment
 
 실제 데이터 파일을 사용하는 예시는 다음과 같습니다.
 ```bash
-python -m src.train --data_path "data/IMDB Dataset.csv" --epochs 1 --train_batch_size 8 --eval_batch_size 16
+python -m src.train --epochs 1 --train_batch_size 8 --eval_batch_size 16
 ```
 
 학습이 끝나면 모델과 토크나이저가 아래 경로에 저장됩니다.
