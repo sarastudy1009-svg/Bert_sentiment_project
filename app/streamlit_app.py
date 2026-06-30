@@ -14,6 +14,8 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from src.config import MODEL_DIR  # noqa: E402
 from src.predict import SentimentPredictor  # noqa: E402
+from src_kim_jihyeo.config import MODEL_DIR as KIM_MODEL_DIR  # noqa: E402
+from src_kim_jihyeo.predict import SentimentPredictor as KimSentimentPredictor  # noqa: E402
 
 
 @st.cache_resource
@@ -21,6 +23,12 @@ def load_predictor() -> SentimentPredictor:
     """Streamlit이 화면을 다시 그릴 때마다 모델을 다시 로드하지 않도록 캐싱합니다."""
     # 저장된 모델 폴더가 있으면 해당 모델을 사용하고, 없으면 기본 BERT 분류 모델을 사용합니다.
     return SentimentPredictor(model_dir=MODEL_DIR)
+
+
+@st.cache_resource
+def load_kim_predictor() -> KimSentimentPredictor:
+    """src_kim_jihyeo의 SentimentPredictor를 캐싱하여 반환합니다."""
+    return KimSentimentPredictor(model_dir=KIM_MODEL_DIR)
 
 
 def main() -> None:
@@ -38,17 +46,17 @@ def main() -> None:
     if not MODEL_DIR.exists():
         st.warning("학습된 모델 폴더가 없습니다. 먼저 `python -m src.train` 명령으로 모델을 학습하면 더 정확한 결과를 볼 수 있습니다.")
 
-    # 예측할 문장을 입력받는 텍스트 영역을 만듭니다.
-    text = st.text_area("분석할 문장 입력", value="This movie was wonderful and I loved it.", height=120)
+    # 예측할 문장을 입력받는 텍스트 영역을 만듭니다.(영문)
+    text1 = st.text_area("분석할 문장 입력", value="This movie was wonderful and I loved it.", height=120)
 
     # 사용자가 버튼을 누르면 예측을 실행합니다.
-    if st.button("감성분석 실행", type="primary"):
+    if st.button("감성분석 실행(영문)", type="primary"):
         try:
             # 캐시된 예측 객체를 불러옵니다.
             predictor = load_predictor()
 
             # 입력 문장에 대한 예측 결과를 계산합니다.
-            result = predictor.predict(text)
+            result = predictor.predict(text1)
 
             # 최종 분류 결과를 크게 출력합니다.
             st.subheader(f"분류 결과: {result['label']}")
@@ -68,6 +76,35 @@ def main() -> None:
             # 예측 중 발생한 오류를 화면에 표시하여 원인을 빠르게 확인할 수 있게 합니다.
             st.error(f"예측 중 오류가 발생했습니다: {error}")
 
+    # 예측할 문장을 입력받는 텍스트 영역을 만듭니다.(한글)
+    text2 = st.text_area("분석할 문장 입력", value="사이몬페그의 익살스런 연기가 돋보였던 영화!재미와 감동", height=120)
+
+    # 사용자가 버튼을 누르면 예측을 실행합니다.
+    if st.button("감성분석 실행(한글)", type="primary"):
+        try:
+            # 캐시된 예측 객체를 불러옵니다.
+            predictor = load_kim_predictor()
+
+            # 입력 문장에 대한 예측 결과를 계산합니다.
+            result = predictor.predict(text2)
+
+            # 최종 분류 결과를 크게 출력합니다.
+            st.subheader(f"분류 결과: {result['label']}")
+
+            # 긍정 확률을 progress bar로 출력합니다.
+            st.write(f"긍정 확률: {result['positive_probability']:.4f}")
+            st.progress(result["positive_probability"])
+
+            # 부정 확률을 progress bar로 출력합니다.
+            st.write(f"부정 확률: {result['negative_probability']:.4f}")
+            st.progress(result["negative_probability"])
+
+            # 현재 어떤 모델 경로를 사용했는지 출력합니다.
+            st.caption(f"사용 모델: {result['model_path']}")
+
+        except Exception as error:
+            # 예측 중 발생한 오류를 화면에 표시하여 원인을 빠르게 확인할 수 있게 합니다.
+            st.error(f"예측 중 오류가 발생했습니다: {error}")
 
 if __name__ == "__main__":
     # streamlit run app/streamlit_app.py로 실행할 때 main 함수를 호출합니다.
