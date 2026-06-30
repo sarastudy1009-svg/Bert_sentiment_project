@@ -24,7 +24,7 @@ Bert_sentiment_project/
 │  ├─ train.py                  # 모델 학습 실행 스크립트
 │  └─ utils.py                  # seed 고정, device 선택 함수
 │
-├─ src_kweon_sora/              [한국어]
+├─ src_kweon_sora/              # [한국어]
 │  ├─ __init__.py
 │  ├─ config.py                 # 경로, 모델명, 라벨 설정
 │  ├─ data_loader.py            # CSV 로드 및 train/valid/test 분리
