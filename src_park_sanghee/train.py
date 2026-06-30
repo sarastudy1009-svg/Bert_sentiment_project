@@ -85,6 +85,7 @@ def train(args: argparse.Namespace) -> None:
         logging_steps=10,
         report_to="none",
         seed=SEED,
+        save_safetensors=False
     )
 
     # Hugging Face Trainer 객체를 생성합니다.
