@@ -81,3 +81,27 @@ streamlit run app/streamlit_app.py
 이 모델은 영어 데이터에 적합합니다. 
 한국어 문장 감성분석을 하려면 한국어 데이터셋으로 학습하고, 
 `src/config.py`의 `DEFAULT_MODEL_NAME`을 한국어 BERT 모델명으로 바꾸어 사용하는 것이 좋습니다.
+
+## 깃 허브에서 프로젝트 복제한 경우
+가상환경 만들기:
+python -m venv .venv
+가상환경 활성화 안 되면 직접 활성화
+
+## 프로젝트 복제
+```bash
+git init
+git clone 저장소주소
+```
+## 본인 브랜치로 이동
+```bash
+git checkout 브랜치이름
+git branch
+*브랜치이름 출력 확인
+```
+본인 개발 작업 진행
+깃허브에 전송한다면:
+```bash
+git add .
+git commit -m "작업내용설명"
+git push
+```
