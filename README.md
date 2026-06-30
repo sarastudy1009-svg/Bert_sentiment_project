@@ -121,4 +121,4 @@ streamlit run app/streamlit_app.py
 ```
 한국어 영역에 리뷰 문장을 입력하고 `감성분석` 버튼을 누르면 긍정/부정 결과와 확률이 출력됩니다.
 
-> 결과 리포트는 `src_choi_yeonwoo/reports/` 폴더를 참고하세요. (`checklist.md`, `구현_보고서.md`, `report_pretrained_nsmc.md`, `report_finetuned_nsmc.md`)
+
