@@ -1,6 +1,6 @@
 # BERT 감성분석 Streamlit PyCharm 프로젝트
 
-BERT Fine-tuning 구조를 `src/` 코드로 분리하고, Streamlit 앱에서 문장을 입력하면 긍정/부정 분류 결과가 출력되도록 구성했습니다.
+BERT Fine-tuning 구조를 `src_lee_taehyuk/` 코드로 분리하고, Streamlit 앱에서 문장을 입력하면 긍정/부정 분류 결과가 출력되도록 구성했습니다.
 
 ## 1. 프로젝트 구조
 ```
@@ -11,7 +11,7 @@ Bert_sentiment_project/
 │  └─ sample_sentiment.csv      # 실행 테스트용 작은 예제 데이터
 ├─ models/
 │  └─ .gitkeep                  # 학습 모델 저장 폴더
-├─ src/
+├─ src_lee_taehyuk/
 │  ├─ config.py                 # 경로, 모델명, 라벨 설정
 │  ├─ data_loader.py            # CSV 로드와 train/valid/test 분리
 │  ├─ dataset.py                # BERT 입력용 PyTorch Dataset
@@ -26,7 +26,7 @@ Bert_sentiment_project/
 
 ## 2. PyCharm에서 실행 준비
 ### 2-1. 프로젝트 만들기
-PyCharm에서 `Bert_sentiment_project` 폴더를 생성합니다.
+PyCharm에서 `Bert_sentiment_project_kor` 폴더를 생성합니다.
 
 ### 2-3. 패키지 설치
 ```bash
@@ -37,7 +37,7 @@ pip install -r requirements.txt
 ## 3. 모델 학습
 기본 예제 데이터로 빠르게 구조를 확인하려면 아래 명령을 실행합니다.
 ```bash
-python -m src.train --data_path data/sample_sentiment.csv --epochs 1 --train_batch_size 2 --eval_batch_size 2
+python -m src_lee_taehyuk.train --data_path data/sample_sentiment_kor.csv --epochs 1 --train_batch_size 2 --eval_batch_size 2
 ```
 실제 IMDB 데이터셋을 사용할 경우 CSV 파일에 다음 컬럼이 있어야 합니다.
 ```text
@@ -69,11 +69,11 @@ streamlit run app/streamlit_app.py
 
 ## 5. 코드 구성 핵심
 이 프로젝트는 실제 PyCharm 프로젝트에서 관리하기 쉬운 앱 구조로 분리했습니다.
-- `src/data_loader.py`: CSV 파일을 읽고 라벨을 숫자로 변환합니다.
-- `src/dataset.py`: 문장을 BERT 입력 텐서로 변환합니다.
-- `src/modeling.py`: BERT 분류 모델 생성과 Fine-tuning 전략을 처리합니다.
-- `src/train.py`: 학습, 평가, 저장을 실행합니다.
-- `src/predict.py`: 저장된 모델을 불러와 문장을 예측합니다.
+- `src_lee_taehyuk/data_loader.py`: CSV 파일을 읽고 라벨을 숫자로 변환합니다.
+- `src_lee_taehyuk/dataset.py`: 문장을 BERT 입력 텐서로 변환합니다.
+- `src_lee_taehyuk/modeling.py`: BERT 분류 모델 생성과 Fine-tuning 전략을 처리합니다.
+- `src_lee_taehyuk/train.py`: 학습, 평가, 저장을 실행합니다.
+- `src_lee_taehyuk/predict.py`: 저장된 모델을 불러와 문장을 예측합니다.
 - `app/streamlit_app.py`: 사용자가 문장을 입력하고 결과를 확인하는 화면입니다.
 
 ## 6. 주의사항
