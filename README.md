@@ -28,6 +28,12 @@ Bert_sentiment_project/
 ### 2-1. 프로젝트 만들기
 PyCharm에서 `Bert_sentiment_project` 폴더를 생성합니다.
 
+
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python.exe -m pip install --upgrade pip
+
+
 ### 2-3. 패키지 설치
 ```bash
 python -m pip install --upgrade pip setuptools wheel

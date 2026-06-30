@@ -12,8 +12,8 @@ PROJECT_ROOT = Path(__file__).resolve().parents[1]
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.append(str(PROJECT_ROOT))
 
-from src.config import MODEL_DIR  # noqa: E402
-from src.predict import SentimentPredictor  # noqa: E402
+from src_park_sanghee.config import MODEL_DIR  # noqa: E402
+from src_park_sanghee.predict import SentimentPredictor  # noqa: E402
 
 
 @st.cache_resource
