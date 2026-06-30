@@ -42,8 +42,8 @@ python -m src.train --data_path data/sample_sentiment.csv --epochs 1 --train_bat
 실제 IMDB 데이터셋을 사용할 경우 CSV 파일에 다음 컬럼이 있어야 합니다.
 ```text
 review,sentiment
-영화 리뷰 문장 또는 영어 리뷰 문장,positive
-영화 리뷰 문장 또는 영어 리뷰 문장,negative
+영화 리뷰 문장 또는 한국어 리뷰 문장,positive
+영화 리뷰 문장 또는 한국어 리뷰 문장,negative
 ```
 
 실제 데이터 파일을 사용하는 예시는 다음과 같습니다.
@@ -81,3 +81,14 @@ streamlit run app/streamlit_app.py
 이 모델은 영어 데이터에 적합합니다. 
 한국어 문장 감성분석을 하려면 한국어 데이터셋으로 학습하고, 
 `src/config.py`의 `DEFAULT_MODEL_NAME`을 한국어 BERT 모델명으로 바꾸어 사용하는 것이 좋습니다.
+
+
+## 깃 허브에서 프로젝트 복제한 경우
+가상환경 만들기
+python -m venv .venv
+
+가상환경 활성화 하기(활성화 안 되었을 경우)
+./.venv/Scripts/activate
+
+패키지 설치
+pip install -r requirements.txt
