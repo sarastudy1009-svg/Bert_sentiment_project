@@ -15,12 +15,17 @@ if str(PROJECT_ROOT) not in sys.path:
 from src.config import MODEL_DIR  # noqa: E402
 from src.predict import SentimentPredictor  # noqa: E402
 
+from src_lee_gunjun.config import KOR_MODEL_DIR
+from src_lee_gunjun.predict import KorSentimentPredictor
 
 @st.cache_resource
 def load_predictor() -> SentimentPredictor:
     """Streamlit이 화면을 다시 그릴 때마다 모델을 다시 로드하지 않도록 캐싱합니다."""
     # 저장된 모델 폴더가 있으면 해당 모델을 사용하고, 없으면 기본 BERT 분류 모델을 사용합니다.
     return SentimentPredictor(model_dir=MODEL_DIR)
+
+def load_kor_predictor() -> KorSentimentPredictor:
+    return KorSentimentPredictor(model_dir=KOR_MODEL_DIR)
 
 
 def main() -> None:
@@ -47,6 +52,7 @@ def main() -> None:
             # 캐시된 예측 객체를 불러옵니다.
             predictor = load_predictor()
 
+
             # 입력 문장에 대한 예측 결과를 계산합니다.
             result = predictor.predict(text)
 
@@ -67,8 +73,35 @@ def main() -> None:
         except Exception as error:
             # 예측 중 발생한 오류를 화면에 표시하여 원인을 빠르게 확인할 수 있게 합니다.
             st.error(f"예측 중 오류가 발생했습니다: {error}")
+    if not KOR_MODEL_DIR.exists():
+        st.warning("학습된 모델 폴더가 없습니다. 먼저 `python -m src_lee_gunjun.train` 명령으로 모델을 학습하면 더 정확한 결과를 볼 수 있습니다.")
+    kor_text = st.text_area("분석할 문장 입력", value="이 영화는 정말 끝내주는 스토리를 가지고 있어", height=120)
+    kor_btn =st.button("한국어 감성분석 실행", type="primary")
+    if kor_btn:
+        try:
+            # 캐시된 예측 객체를 불러옵니다.
+            kor_predictor = load_kor_predictor()
 
+            # 입력 문장에 대한 예측 결과를 계산합니다.
+            kor_result = kor_predictor.predict(kor_text)
 
+            # 최종 분류 결과를 크게 출력합니다.
+            st.subheader(f"분류 결과: {kor_result['label']}")
+
+            # 긍정 확률을 progress bar로 출력합니다.
+            st.write(f"긍정 확률: {kor_result['positive_probability']:.4f}")
+            st.progress(kor_result["positive_probability"])
+
+            # 부정 확률을 progress bar로 출력합니다.
+            st.write(f"부정 확률: {kor_result['negative_probability']:.4f}")
+            st.progress(kor_result["negative_probability"])
+
+            # 현재 어떤 모델 경로를 사용했는지 출력합니다.
+            st.caption(f"사용 모델: {kor_result['model_path']}")
+
+        except Exception as error:
+            # 예측 중 발생한 오류를 화면에 표시하여 원인을 빠르게 확인할 수 있게 합니다.
+            st.error(f"예측 중 오류가 발생했습니다: {error}")
 if __name__ == "__main__":
     # streamlit run app/streamlit_app.py로 실행할 때 main 함수를 호출합니다.
     main()
