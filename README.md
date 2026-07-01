@@ -37,7 +37,7 @@ pip install -r requirements.txt
 ## 3. 모델 학습
 기본 예제 데이터로 빠르게 구조를 확인하려면 아래 명령을 실행합니다.
 ```bash
-python -m src.train --data_path data/sample_sentiment.csv --epochs 1 --train_batch_size 2 --eval_batch_size 2
+python -m src.train 
 ```
 실제 IMDB 데이터셋을 사용할 경우 CSV 파일에 다음 컬럼이 있어야 합니다.
 ```text
@@ -81,3 +81,14 @@ streamlit run app/streamlit_app.py
 이 모델은 영어 데이터에 적합합니다. 
 한국어 문장 감성분석을 하려면 한국어 데이터셋으로 학습하고, 
 `src/config.py`의 `DEFAULT_MODEL_NAME`을 한국어 BERT 모델명으로 바꾸어 사용하는 것이 좋습니다.
+
+## 프로젝트 복제
+..> git init
+..> git clone url
+..> git checkout 브랜치명 (브랜치 이동)
+..> git branch (로 확인)
+
+## git 전송
+..> git add.
+..> git commit -m '작업내용 설명'
+..> git push 

@@ -39,7 +39,7 @@ def main() -> None:
         st.warning("학습된 모델 폴더가 없습니다. 먼저 `python -m src.train` 명령으로 모델을 학습하면 더 정확한 결과를 볼 수 있습니다.")
 
     # 예측할 문장을 입력받는 텍스트 영역을 만듭니다.
-    text = st.text_area("분석할 문장 입력", value="This movie was wonderful and I loved it.", height=120)
+    text = st.text_area("분석할 문장 입력", value="이 영화 정말 재미있고 감동적이었어요.", height=120)
 
     # 사용자가 버튼을 누르면 예측을 실행합니다.
     if st.button("감성분석 실행", type="primary"):
